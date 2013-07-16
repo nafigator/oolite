@@ -214,6 +214,16 @@ static NSTimeInterval	time_last_frame;
 	LOAD_KEY_SETTING(key_yaw_left,				','			);
 	LOAD_KEY_SETTING(key_yaw_right,				'.'			);
 
+	LOAD_KEY_SETTING(key_view_forward,			'1'			);
+	LOAD_KEY_SETTING(key_view_aft,				'2'			);
+	LOAD_KEY_SETTING(key_view_port,				'3'			);
+	LOAD_KEY_SETTING(key_view_starboard,		'4'			);
+
+	LOAD_KEY_SETTING(key_gui_screen_status,		'5'			);
+	LOAD_KEY_SETTING(key_gui_chart_screens,		'6'			);
+	LOAD_KEY_SETTING(key_gui_system_data,		'7'			);
+	LOAD_KEY_SETTING(key_gui_market,			'8'			);
+
 	LOAD_KEY_SETTING(key_increase_speed,		'w'			);
 	LOAD_KEY_SETTING(key_decrease_speed,		's'			);
 	LOAD_KEY_SETTING(key_inject_fuel,			'i'			);
@@ -750,19 +760,19 @@ static NSTimeInterval	time_last_frame;
 					virtualView.y = 0.0;
 			}
 
-			if (([gameView isDown:gvFunctionKey1])||(virtualView.y < -view_threshold)||joyButtonState[BUTTON_VIEWFORWARD])
+			if (([gameView isDown:gvFunctionKey1] || [gameView isDown:key_view_forward]) || (virtualView.y < -view_threshold) || joyButtonState[BUTTON_VIEWFORWARD])
 			{
 				view = VIEW_FORWARD;
 			}
-			if (([gameView isDown:gvFunctionKey2])||(virtualView.y > view_threshold)||joyButtonState[BUTTON_VIEWAFT])
+			if (([gameView isDown:gvFunctionKey2] || [gameView isDown:key_view_aft]) || (virtualView.y > view_threshold) || joyButtonState[BUTTON_VIEWAFT])
 			{
 				view = VIEW_AFT;
 			}
-			if (([gameView isDown:gvFunctionKey3])||(virtualView.x < -view_threshold)||joyButtonState[BUTTON_VIEWPORT])
+			if (([gameView isDown:gvFunctionKey3] || [gameView isDown:key_view_port]) || (virtualView.x < -view_threshold) || joyButtonState[BUTTON_VIEWPORT])
 			{
 				view = VIEW_PORT;
 			}
-			if (([gameView isDown:gvFunctionKey4])||(virtualView.x > view_threshold)||joyButtonState[BUTTON_VIEWSTARBOARD])
+			if (([gameView isDown:gvFunctionKey4] || [gameView isDown:key_view_starboard]) || (virtualView.x > view_threshold) || joyButtonState[BUTTON_VIEWSTARBOARD])
 			{
 				view = VIEW_STARBOARD;
 			}
@@ -1367,7 +1377,7 @@ static NSTimeInterval	time_last_frame;
 
 			// check options menu request
 			exceptionContext = @"options menu";
-			if (([gameView isDown:gvFunctionKey2])&&(gui_screen != GUI_SCREEN_OPTIONS))
+			if (([gameView isDown:gvFunctionKey2] || [gameView isDown:key_view_aft]) && (gui_screen != GUI_SCREEN_OPTIONS))
 			{
 				[gameView clearKeys];
 				[self setGuiToLoadSaveScreen];
@@ -1791,7 +1801,7 @@ static NSTimeInterval	time_last_frame;
 
 		case GUI_SCREEN_SAVE:
 			[self pollGuiScreenControlsWithFKeyAlias:NO];
-			if ([gameView isDown:gvFunctionKey1])  [self handleUndockControl];
+			if ([gameView isDown:gvFunctionKey1] || [gameView isDown:key_view_forward])  [self handleUndockControl];
 			if (gui_screen == GUI_SCREEN_SAVE)
 			{
 				[self saveCommanderInputHandler];
@@ -2796,19 +2806,19 @@ static NSTimeInterval	time_last_frame;
 	const BOOL *joyButtonState = [stickHandler getAllButtonStates];
 
 	//  view keys
-	if (([gameView isDown:gvFunctionKey1])||(virtualView.y < -view_threshold)||joyButtonState[BUTTON_VIEWFORWARD] || ((([gameView isDown:key_hyperspace] && gui_screen != GUI_SCREEN_LONG_RANGE_CHART) || joyButtonState[BUTTON_HYPERDRIVE]) && [UNIVERSE displayGUI]))
+	if (([gameView isDown:gvFunctionKey1] || [gameView isDown:key_view_forward]) || (virtualView.y < -view_threshold)||joyButtonState[BUTTON_VIEWFORWARD] || ((([gameView isDown:key_hyperspace] && gui_screen != GUI_SCREEN_LONG_RANGE_CHART) || joyButtonState[BUTTON_HYPERDRIVE]) && [UNIVERSE displayGUI]))
 	{
 		[self switchToThisView:VIEW_FORWARD];
 	}
-	if (([gameView isDown:gvFunctionKey2])||(virtualView.y > view_threshold)||joyButtonState[BUTTON_VIEWAFT])
+	if (([gameView isDown:gvFunctionKey2] || [gameView isDown:key_view_aft])||(virtualView.y > view_threshold)||joyButtonState[BUTTON_VIEWAFT])
 	{
 		[self switchToThisView:VIEW_AFT];
 	}
-	if (([gameView isDown:gvFunctionKey3])||(virtualView.x < -view_threshold)||joyButtonState[BUTTON_VIEWPORT])
+	if (([gameView isDown:gvFunctionKey3] || [gameView isDown:key_view_port])||(virtualView.x < -view_threshold)||joyButtonState[BUTTON_VIEWPORT])
 	{
 		[self switchToThisView:VIEW_PORT];
 	}
-	if (([gameView isDown:gvFunctionKey4])||(virtualView.x > view_threshold)||joyButtonState[BUTTON_VIEWSTARBOARD])
+	if (([gameView isDown:gvFunctionKey4] || [gameView isDown:key_view_starboard])||(virtualView.x > view_threshold)||joyButtonState[BUTTON_VIEWSTARBOARD])
 	{
 		[self switchToThisView:VIEW_STARBOARD];
 	}
@@ -3128,7 +3138,7 @@ static NSTimeInterval	time_last_frame;
 	BOOL			docked_okay = ([self status] == STATUS_DOCKED);
 
 	//  text displays
-	if ([gameView isDown:gvFunctionKey5])
+	if ([gameView isDown:gvFunctionKey5] || [gameView isDown:key_gui_screen_status])
 	{
 		if (!switching_status_screens)
 		{
@@ -3148,7 +3158,7 @@ static NSTimeInterval	time_last_frame;
 		switching_status_screens = NO;
 	}
 
-	if ([gameView isDown:gvFunctionKey6])
+	if ([gameView isDown:gvFunctionKey6] || [gameView isDown:key_gui_chart_screens])
 	{
 		if  (!switching_chart_screens)
 		{
@@ -3164,7 +3174,7 @@ static NSTimeInterval	time_last_frame;
 		switching_chart_screens = NO;
 	}
 
-	if ([gameView isDown:gvFunctionKey7])
+	if ([gameView isDown:gvFunctionKey7] || [gameView isDown:key_gui_system_data])
 	{
 		if (gui_screen != GUI_SCREEN_SYSTEM_DATA)
 		{
@@ -3177,13 +3187,13 @@ static NSTimeInterval	time_last_frame;
 
 	if (docked_okay)
 	{
-		if (([gameView isDown:gvFunctionKey2])&&(gui_screen != GUI_SCREEN_OPTIONS))
+		if (([gameView isDown:gvFunctionKey2] || [gameView isDown:key_view_aft]) && (gui_screen != GUI_SCREEN_OPTIONS))
 		{
 			[gameView clearKeys];
 			[self setGuiToLoadSaveScreen];
 		}
 
-		if ([gameView isDown:gvFunctionKey3])
+		if ([gameView isDown:gvFunctionKey3] || [gameView isDown:key_view_port])
 		{
 			if (!switching_equipship_screens)
 			{
@@ -3215,13 +3225,13 @@ static NSTimeInterval	time_last_frame;
 			switching_equipship_screens = NO;
 		}
 
-		if ([gameView isDown:gvFunctionKey4])
+		if ([gameView isDown:gvFunctionKey4] || [gameView isDown:key_view_starboard])
 		{
 			[self setGuiToInterfacesScreen:0];
 			[gui setSelectedRow:GUI_ROW_INTERFACES_START];
 		}
 
-		if ([gameView isDown:gvFunctionKey8])
+		if ([gameView isDown:gvFunctionKey8] || [gameView isDown:key_gui_market])
 		{
 			[gameView clearKeys];
 			[self noteGUIWillChangeTo:GUI_SCREEN_MARKET];
@@ -3231,7 +3241,7 @@ static NSTimeInterval	time_last_frame;
 	}
 	else
 	{
-		if ([gameView isDown:gvFunctionKey8])
+		if ([gameView isDown:gvFunctionKey8] || [gameView isDown:key_gui_market])
 		{
 			[self noteGUIWillChangeTo:GUI_SCREEN_MARKET];
 			[self setGuiToMarketScreen];
@@ -3397,7 +3407,7 @@ static BOOL autopilot_pause;
 		if(pollControls)
 		{
 			exceptionContext = @"undock";
-			if ([gameView isDown:gvFunctionKey1])   // look for the f1 key
+			if ([gameView isDown:gvFunctionKey1] || [gameView isDown:key_view_forward])   // look for the f1 key
 			{
 				if (EXPECT(gui_screen != GUI_SCREEN_MISSION || _missionAllowInterrupt))
 				{
